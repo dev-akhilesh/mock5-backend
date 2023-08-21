@@ -1,5 +1,3 @@
-// index.js
-
 const express = require('express');
 const app = express();
 const cors = require('cors');
@@ -9,7 +7,6 @@ const authRoutes = require('./routes/authRoutes');
 const doctorRoutes = require('./routes/doctorRoutes');
 
 dotenv.config();
-
 
 app.use(express.json());
 app.use(cors());
@@ -24,7 +21,14 @@ app.get('/', (req, res) => {
 
 const PORT = process.env.PORT || 8080;
 
-app.listen(PORT, () => {
-    connectDB();
-    console.log(`Server running on port ${PORT}`);
-});
+// Call connectDB() here to establish the MongoDB connection
+connectDB()
+    .then(() => {
+        app.listen(PORT, () => {
+            console.log(`Server running on port ${PORT}`);
+        });
+    })
+    .catch((error) => {
+        console.log("Error connecting to MongoDB", error);
+        process.exit(1);
+    });
